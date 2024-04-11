@@ -1,3 +1,27 @@
+function read(array) {
+    document.write(`
+	<table border="1">
+		<thead>
+			<tr>
+				${Object.keys(array[0]).map((column) => (`
+					<th>${column}</th>
+				`)).join('')}
+			</tr>
+		</thead>
+		<tbody>
+			${array.map((row) => (`
+				<tr>
+					${Object.values(row).map((value) => (
+						`<td>${value}</td>`
+					)).join('')}
+				</tr>
+			`)).join('')}
+		</tbody>
+	</table>
+`)
+}
+
+
 // const minAtck = 1;
 // const maxAtck = 10;
 // const minDef = 1;
@@ -118,6 +142,7 @@ function battle(array) {
     if (fight(array[attacker], array[defender], defender) === 'dead') {
         death(array, defender);
     }
+    read(array);
 }
 
 /**
@@ -141,7 +166,6 @@ function battleTimout(array) {
         }
         else {
             alert(`Félicitation à ${array[0].name} d'avoir remporté la victoire !`);
-            document.location.reload();
         }
     }, 750)
 }
