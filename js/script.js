@@ -7,32 +7,39 @@
 // const nCara = 4;
 
 let caracters = [{
-    name : 'Louise MICHEL',
-    hp : 50,
-    xp : 8,
-    atck : 10,
-    def : 6
+    name: 'Louise MICHEL',
+    hp: 50,
+    xp: 8,
+    atck: 10,
+    def: 6
 },
 {
-    name : 'Karl MARX',
-    hp : 50,
-    xp : 9,
-    atck : 6,
-    def : 6
+    name: 'Karl MARX',
+    hp: 50,
+    xp: 9,
+    atck: 6,
+    def: 6
 },
 {
-    name : 'Marsha P. JOHNSON',
-    hp : 50,
-    xp : 9,
-    atck : 9,
-    def : 9
+    name: 'Marsha P. JOHNSON',
+    hp: 50,
+    xp: 9,
+    atck: 9,
+    def: 9
 },
 {
-    name : 'Manu Macron',
-    hp : 5,
-    xp : 1,
-    atck : 1,
-    def : 1
+    name: 'Pierre KROPOTKINE',
+    hp: 50,
+    xp: 9,
+    atck: 6,
+    def: 6
+},
+{
+    name: 'Manu Macron',
+    hp: 5,
+    xp: 1,
+    atck: 1,
+    def: 1
 }];
 
 
@@ -68,7 +75,7 @@ function getRandomBetweenValue(min, max) {
  * @param {object} caracter -the object of the caracter
  * @param {number} n -the number of lvlup you want him/her to have
  */
-function lvlUp (caracter, n){
+function lvlUp(caracter, n) {
     caracter.xp += n;
 }
 
@@ -103,14 +110,13 @@ function fight(attacker, defender) {
  * @param {array} array - caracter's array
  */
 function battle(array) {
-    const attacker = getRandomBetweenValue(0, array.length - 1);
+    let attacker = getRandomBetweenValue(0, array.length - 1);
     let defender;
     while (defender === undefined || defender === attacker) {
         defender = getRandomBetweenValue(0, array.length - 1);
     };
-    fight(array[attacker], array[defender]);
-    if (fight(array[attacker], array[defender], defender) === 'dead'){
-        death(defender);
+    if (fight(array[attacker], array[defender], defender) === 'dead') {
+        death(array, defender);
     }
 }
 
@@ -127,13 +133,13 @@ function death(array, defender) {
  * Do the battle every 750 milisecond and stop when only 1 caracter remain
  * @param {array} array -caracter's array
  */
-function battleTimout(array){
+function battleTimout(array) {
     setTimeout(() => {
         if (array.length > 1) {
             battle(array);
             battleTimout(array);
         }
-        else{
+        else {
             alert(`Félicitation à ${array[0].name} d'avoir remporté la victoire !`);
             document.location.reload();
         }
