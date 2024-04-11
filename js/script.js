@@ -1,13 +1,39 @@
+// const minAtck = 1;
+// const maxAtck = 10;
+// const minDef = 1;
+// const maxDef = 10;
+// const minXp = 1;
+// const maxXp = 10;
+// const nCara = 4;
 
-const minAtck = 1;
-const maxAtck = 10;
-const minDef = 1;
-const maxDef = 10;
-const minXp = 1;
-const maxXp = 10;
-const nCara = 4;
-
-let caracters = [];
+let caracters = [{
+    name : 'Louise MICHEL',
+    hp : 50,
+    xp : 8,
+    atck : 10,
+    def : 6
+},
+{
+    name : 'Karl MARX',
+    hp : 50,
+    xp : 9,
+    atck : 6,
+    def : 6
+},
+{
+    name : 'Marsha P. JOHNSON',
+    hp : 50,
+    xp : 9,
+    atck : 9,
+    def : 9
+},
+{
+    name : 'Manu Macron',
+    hp : 5,
+    xp : 1,
+    atck : 1,
+    def : 1
+}];
 
 
 /**
@@ -20,43 +46,55 @@ function getRandomBetweenValue(min, max) {
     return Math.floor(min + Math.random() * (max + 1 - min))
 }
 
+// /**
+//  * Create 'n' numbers of caracters in your array
+//  * @param {array} array -where you want your caracter to be created in
+//  * @param {number} n -number of caracters you want to create
+//  */
+// function creatCara(array, n) {
+//     while (array.length < n) {
+//         array.push({
+//             name: prompt('choisissez un nom'),
+//             hp: 50,
+//             xp: getRandomBetweenValue(minXp, maxXp),
+//             atck: getRandomBetweenValue(minAtck, maxAtck),
+//             def: getRandomBetweenValue(minDef, maxDef)
+//         });
+//     }
+// }
+
 /**
- * Create 'n' numbers of caracters in your array
- * @param {array} array -where you want your caracter to be created in
- * @param {number} n -number of caracters you want to create
+ * Add 'n' to the caracter's xp
+ * @param {object} caracter -the object of the caracter
+ * @param {number} n -the number of lvlup you want him/her to have
  */
-function creatCara(array, n) {
-    while (array.length < n) {
-        array.push({
-            name: prompt('choisissez un nom'),
-            hp: 50,
-            xp: getRandomBetweenValue(minXp, maxXp),
-            atck: getRandomBetweenValue(minAtck, maxAtck),
-            def: getRandomBetweenValue(minDef, maxDef)
-        });
-    }
+function lvlUp (caracter, n){
+    caracter.xp += n;
 }
 
 /**
- * Do the fight between the attacker and the defender
- * @param {array} array -the caracter's array
- * @param {number} attacker -index of the attacker
- * @param {number} defender -index of the defender
+ * Do the fight between attacker and defender
+ * @param {object} attacker -the object of th attacker
+ * @param {object} defender -the object of the defender
+ * @return {string} -in case the defender dies, return 'dead' to specifie the death
  */
-function fight(array, attacker, defender) {
-    let atckPwr = getRandomBetweenValue(0, array[attacker].atck) + array[attacker].xp;
-    if (atckPwr > getRandomBetweenValue(0, array[defender].def) + array[defender].xp) {
-        array[defender].hp -= atckPwr;
-        if (array[defender].hp <= 0) {
-            console.info(array[attacker].name, ' a tué ', array[defender].name);
-            death(array, defender);
+function fight(attacker, defender) {
+    let atckPwr = getRandomBetweenValue(attacker.xp, attacker.atck + attacker.xp);
+    if (atckPwr > getRandomBetweenValue(defender.xp, defender.def + defender.xp)) {
+        defender.hp -= atckPwr;
+        if (defender.hp <= 0) {
+            console.info(attacker.name, 'a tué', defender.name);
+            lvlUp(attacker, 1);
+            return 'dead';
         }
         else {
-            console.log(`${array[attacker].name} a enlevé ${atckPwr} points de vie à ${array[defender].name}`);
+            console.log(`${attacker.name} a enlevé ${atckPwr} points de vie à ${defender.name}`);
+            lvlUp(attacker, 0.5);
         }
     }
     else {
-        console.log(array[defender].name, " a résister à l'attaque de ", array[attacker].name)
+        console.log(defender.name, "a résister à l'attaque de", attacker.name)
+        lvlUp(defender, 0.5);
     }
 }
 
@@ -65,15 +103,15 @@ function fight(array, attacker, defender) {
  * @param {array} array - caracter's array
  */
 function battle(array) {
-    //cara atck
     const attacker = getRandomBetweenValue(0, array.length - 1);
-
-    //cara atck
     let defender;
     while (defender === undefined || defender === attacker) {
         defender = getRandomBetweenValue(0, array.length - 1);
     };
-    fight(array, attacker, defender);
+    fight(array[attacker], array[defender]);
+    if (fight(array[attacker], array[defender], defender) === 'dead'){
+        death(defender);
+    }
 }
 
 /**
@@ -86,7 +124,7 @@ function death(array, defender) {
 }
 
 /**
- * Do the battle every 'time' milisecond and stop when only 1 caracter remain
+ * Do the battle every 750 milisecond and stop when only 1 caracter remain
  * @param {array} array -caracter's array
  */
 function battleTimout(array){
@@ -96,13 +134,14 @@ function battleTimout(array){
             battleTimout(array);
         }
         else{
-            console.info(`Félicitation à ${array[0].name} d'avoir remporté la victoire !`);
+            alert(`Félicitation à ${array[0].name} d'avoir remporté la victoire !`);
+            document.location.reload();
         }
     }, 750)
 }
 
 function battleRoyal(array) {
-    creatCara(array, nCara);
+    // creatCara(array, nCara);
     console.table(array);
     battleTimout(array);
 }
